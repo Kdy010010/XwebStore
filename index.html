@@ -9,14 +9,66 @@
       color: white; /* 흰색 글자 설정 */
       text-align: center; /* 텍스트 가운데 정렬 */
     }
+
+    /* 검색 상자 스타일 */
+    #search-box {
+      margin-top: 20px;
+    }
+
+    /* 검색 결과 스타일 */
+    #search-results {
+      text-align: left;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
   <h1>welcome to the online web app store Xweb!</h1>
-  todays app:<br>
+  
+  <!-- 검색 상자 -->
+  <div id="search-box">
+    <label for="search-input">Search:</label>
+    <input type="text" id="search-input">
+    <button onclick="searchApps()">Search</button>
+  </div>
+
+  <!-- 검색 결과 -->
+  <div id="search-results"></div>
+
+  <!-- 오늘의 앱 -->
+  <h2>Today's app:</h2>
   <ul>
     <li><a href="htmlviewer.html">HTML Viewer</a></li>
   </ul>
+
   <a href="devs.html">for devs</a>
+
+  <script>
+    // 앱 검색 기능 구현
+    function searchApps() {
+      var searchTerm = document.getElementById('search-input').value.toLowerCase();
+      var apps = [
+        { name: "HTML Viewer", link: "htmlviewer.html" },
+        // 다른 앱 정보를 여기에 추가할 수 있습니다.
+      ];
+      var searchResults = document.getElementById('search-results');
+      searchResults.innerHTML = ''; // 이전 검색 결과를 지웁니다.
+      var foundApps = apps.filter(app => app.name.toLowerCase().includes(searchTerm));
+      if (foundApps.length === 0) {
+        searchResults.innerHTML = 'No apps found.';
+      } else {
+        var ul = document.createElement('ul');
+        foundApps.forEach(app => {
+          var li = document.createElement('li');
+          var a = document.createElement('a');
+          a.href = app.link;
+          a.textContent = app.name;
+          li.appendChild(a);
+          ul.appendChild(li);
+        });
+        searchResults.appendChild(ul);
+      }
+    }
+  </script>
 </body>
 </html>
