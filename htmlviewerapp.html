@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML Viewer</title>
+  <style>
+    #viewer-container {
+      width: 80%;
+      margin: 50px auto;
+      text-align: center;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      margin-bottom: 20px;
+    }
+
+    #result-container {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div id="viewer-container">
+    <textarea id="html-input" placeholder="Enter HTML code here..."></textarea>
+    <button id="view-btn">View HTML</button>
+    <div id="result-container"></div>
+  </div>
+
+  <script>
+    document.getElementById('view-btn').addEventListener('click', function() {
+      var htmlCode = document.getElementById('html-input').value;
+      document.getElementById('result-container').innerHTML = htmlCode;
+    });
+  </script>
+</body>
+</html>
