@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Maker</title>
+    <style>
+        #recordButton, #playButton, #exportButton, #importButton {
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Music Maker</h1>
+    <button id="recordButton">Record</button>
+    <button id="playButton">Play</button>
+    <button id="exportButton">Export</button>
+    <input type="file" id="importButton">
+    <audio id="audio" controls></audio>
+
+    <script>
+        let isRecording = false;
+        let chunks = [];
+
+        const recordButton = document.getElementById('recordButton');
+        const playButton = document.getElementById('playButton');
+        const exportButton = document.getElementById('exportButton');
+        const importButton = document.getElementById('importButton');
+        const audio = document.getElementById('audio');
+
+        recordButton.addEventListener('click', () => {
+            if (!isRecording) {
+                startRecording();
+                recordButton.textContent = 'Stop Recording';
+            } else {
+                stopRecording();
+                recordButton.textContent = 'Record';
+            }
+            isRecording = !isRecording;
+        });
+
+        playButton.addEventListener('click', () => {
+            const blob = new Blob(chunks, { type: 'audio/wav' });
+            const audioURL = URL.createObjectURL(blob);
+            audio.src = audioURL;
+            audio.play();
+        });
+
+        exportButton.addEventListener('click', () => {
+            const blob = new Blob(chunks, { type: 'audio/wav' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'recorded_audio.wav';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+        });
+
+        importButton.addEventListener('change', () => {
+            const file = importButton.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                audio.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function startRecording() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    const mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.ondataavailable = e => {
+                        chunks.push(e.data);
+                    };
+                    mediaRecorder.onstop = () => {
+                        stream.getTracks().forEach(track => track.stop());
+                    };
+                    mediaRecorder.start();
+                })
+                .catch(err => console.error('Error recording:', err));
+        }
+
+        function stopRecording() {
+            chunks = [];
+        }
+    </script>
+</body>
+</html>
